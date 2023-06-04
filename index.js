@@ -34,6 +34,27 @@ const corsOptions = {
   
   async function run() {
     try {
+
+      const usersCollection = client.db('aircncDb').collection('users');
+      const roomsCollection = client.db('aircncDb').collection('rooms');
+      const bookingsCollection = client.db('aircncDb').collection('bookings');
+
+      // save user email and role in DB
+      app.put('/users/:email', async(req, res) => {
+        const email = req.params.email
+        const user = req.body
+        const query = { email: email}
+        const options = {upsert: true}
+        const updateDoc = {
+          $set: user
+        }
+
+        const result = await usersCollection.updateOne(query, updateDoc, options)
+        console.log(result)
+        res.send(result)
+      })
+
+
       // Connect the client to the server	(optional starting in v4.7)
       await client.connect();
       // Send a ping to confirm a successful connection
