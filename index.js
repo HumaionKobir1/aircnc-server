@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const port = process.env.PORT || 5000;
 
@@ -53,6 +53,31 @@ const corsOptions = {
         console.log(result)
         res.send(result)
       })
+
+
+      // get all room 
+      app.get('/rooms', async (req, res) => {
+        const result = await roomsCollection.find().toArray();
+        res.send(result);
+      })
+
+
+      // get a single room
+      app.get('/rooms/:id', async (req, res) => {
+        const id = req.params.id
+        const query = {_id: new ObjectId(id)}
+        const result = await roomsCollection.findOne(query)
+        console.log(result)
+        res.send(result)
+      })
+
+
+    // save a room in database
+    app.post('/rooms', async (req, res) => {
+      const room = req.body
+      const result = await roomsCollection.insertOne(room)
+      res.send(result)
+    })
 
 
       // Connect the client to the server	(optional starting in v4.7)
